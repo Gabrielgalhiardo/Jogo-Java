@@ -85,7 +85,7 @@ public class Main {
                                     "\nVoçê acabou batendo todos os carro e ficou pobre..." +
                                     "\nSeu saldo total é de: R$" + (dinheiro = 10));
                             menuPrincipal();
-                        }else{
+                        } else {
                             System.out.println("Voce Trabalhou por 7 anos...\nNessa jornada voçê não bateu nenhum carro!!! " +
                                     "\nSua idade atual é de: " + (idade += 7) + "anos" +
                                     "\nSeu saldo total é de: R$ " + (dinheiro += 80));
@@ -234,7 +234,14 @@ public class Main {
                         for (int vezes = 0; vezes < 25; vezes++) {
                             hashSet.add(random.nextInt(30 + 1));
                         }
-                        List valorListaTotal = new ArrayList<>(hashSet);
+                        for (int i = 0; i < 20; i++) {
+                            hashSet.remove(random.nextInt(hashSet.size()));
+                            if (hashSet.size() == 9) {
+                                break;
+                            }
+                        }
+
+                        ArrayList valorListaTotal = new ArrayList<>(hashSet);
                         for (int i = 0; i < 10; i++) {
                             try {
                                 Thread.sleep(500);
@@ -243,6 +250,7 @@ public class Main {
                             }
                             System.out.println(valorListaTotal.get(i));
                         }
+
                         if (valorListaTotal.contains(numUser)) {
                             System.out.println("Voçê conseguiu acertar o numero, Parabenss!" +
                                     "\nO premio que voçê vai ganhar é de: R$" + (total = valorInvestimentoUser * 2) +
