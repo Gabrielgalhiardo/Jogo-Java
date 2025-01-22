@@ -1,5 +1,8 @@
 package org.example;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
@@ -7,13 +10,46 @@ public class Main {
     static double dinheiro = 500;
     static int idade = 0;
 
+
     static int opcaoUser = 0;
 
     static Random random = new Random();
 
+
+
+
     public static void main(String[] args) {
+        adicionarNomeDoPlayer();
         menuPrincipal();
         scanner.close();
+
+    }
+
+    public static void adicionarNomeDoPlayer(){
+        System.out.print("Digite seu nome: ");
+        String nome = scanner.nextLine();
+
+        Player player = new Player(
+                nome,
+                0,
+                0
+        );
+
+        player.boasVindas();
+        Player.getListaPlayers().add(player);
+        System.out.println(Player.getListaPlayers());
+        salvarPlayer();
+    }
+    public static void salvarPlayer(){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src\\main\\java\\files\\BancoDeDados", true))){
+            for (Player player : Player.listaPlayers){
+                String linha = player.toString();
+                writer.write(linha + "\n");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao salvar",e);
+        }
+
     }
 
     public static void seletorDeTrabalhos() {
