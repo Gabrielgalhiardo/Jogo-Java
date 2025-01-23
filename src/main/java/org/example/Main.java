@@ -1,13 +1,13 @@
 package org.example;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Main {
     public static Scanner scanner = new Scanner(System.in);
-    static double dinheiro = 500;
+    static File file = new File("src\\main\\java\\files\\BancoDeDados");
+
+    static long dinheiro = 500;
     static int idade = 0;
 
 
@@ -16,34 +16,90 @@ public class Main {
     static Random random = new Random();
 
 
-
-
     public static void main(String[] args) {
+        lerBancoDeDados();
         adicionarNomeDoPlayer();
         menuPrincipal();
         scanner.close();
 
     }
 
-    public static void adicionarNomeDoPlayer(){
-        System.out.print("Digite seu nome: ");
-        String nome = scanner.nextLine();
+    public static void adicionarNomeDoPlayer() {
+        System.out.println("Deseja criar um novo Player?\n");
+        simOuNao();
+        if (opcaoUser == 1){
+            System.out.print("Digite seu nome: ");
+            String nome = scanner.nextLine();
 
-        Player player = new Player(
-                nome,
-                0,
-                0
-        );
+            Player player = new Player(
+                    nome,
+                    0,
+                    0
+            );
 
-        player.boasVindas();
-        Player.getListaPlayers().add(player);
-        System.out.println(Player.getListaPlayers());
-        salvarPlayer();
-    }
-    public static void salvarPlayer(){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src\\main\\java\\files\\BancoDeDados", true))){
+            player.boasVindas();
+            Player.getListaPlayers().add(player);
+            System.out.println(Player.getListaPlayers());
+            salvarPlayer();
+        }else{
             for (Player player : Player.listaPlayers){
-                String linha = player.toString();
+                System.out.println(player);
+            }
+            System.out.print("\nDigite o nome do player que deseja continuar a jogar\n");
+            String nome = scanner.nextLine();
+
+        }
+    }
+
+    public static void lerBancoDeDados() {
+        if (!(file.exists())) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException("erro ao criar o arquivo", e);
+            }
+            return;
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))){
+            String linha;
+
+            while ((linha = reader.readLine()) != null) {
+                String[] parte = linha.split(",");
+
+            if (parte.length != 3) {
+                System.out.println("Linha inválida no arquivo: " + linha);
+                continue; // Ignora a linha inválida
+            }
+
+            try {
+                String nome = parte[0];
+                long dinheiroNovo = Long.parseLong(parte[1]);
+                int idadeNova = Integer.parseInt(parte[2]);
+
+                Player playerNovo = new Player(
+                        nome,
+                        dinheiroNovo,
+                        idadeNova
+                );
+                Player.listaPlayers.add(playerNovo);
+            }catch (NumberFormatException e) {
+                System.out.println("Erro ao converter dados na linha: " + linha);
+            }
+
+            }
+
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("nao achou o banco de dados",e);
+    } catch (IOException e) {
+            throw new RuntimeException("Erro ao ler o banco de dados",e);
+        }
+    }
+
+    public static void salvarPlayer(){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))){
+            for (Player player : Player.listaPlayers){
+                String linha = player.getNome() + "," + player.getDinheiro() + "," + player.getIdade();
                 writer.write(linha + "\n");
             }
         } catch (IOException e) {
