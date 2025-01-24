@@ -23,6 +23,14 @@ public class Player {
         this.idade = idade;
     }
 
+    public static Player FindByName(String nome){
+        return listaPlayers.stream()
+                .filter(player -> player.getNome().equalsIgnoreCase(nome) )
+                .findFirst()
+                .orElse(null);
+
+    }
+
     public static List<Player> getListaPlayers(){
         return listaPlayers;
     }

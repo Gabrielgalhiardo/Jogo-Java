@@ -6,9 +6,8 @@ import java.util.*;
 public class Main {
     public static Scanner scanner = new Scanner(System.in);
     static File file = new File("src\\main\\java\\files\\BancoDeDados");
+    static Player playerLogged = null;
 
-    static long dinheiro = 500;
-    static int idade = 0;
 
 
     static int opcaoUser = 0;
@@ -39,14 +38,18 @@ public class Main {
 
             player.boasVindas();
             Player.getListaPlayers().add(player);
-            System.out.println(Player.getListaPlayers());
             salvarPlayer();
+            playerLogged = player;
+
         }else{
             for (Player player : Player.listaPlayers){
                 System.out.println(player);
             }
-            System.out.print("\nDigite o nome do player que deseja continuar a jogar\n");
+            System.out.print("\nDigite o nome do player que deseja continuar a jogar: ");
             String nome = scanner.nextLine();
+            Player player = Player.FindByName(nome);
+            playerLogged = player;
+            System.out.println(playerLogged);
 
         }
     }
@@ -133,10 +136,13 @@ public class Main {
                 case 1:
                     System.out.println("O pegador de latinhas ganha R$ 40,0 trabalhando por 3 anos de vida trabalhados." +
                             "\nVocê deseja aceitar esse trabalho?");
-                    if (simOuNao()) {
+                    simOuNao();
+                    if (opcaoUser == 1) {
+                        playerLogged.setIdade(playerLogged.getIdade() + 3);
+                        playerLogged.setDinheiro(playerLogged.getDinheiro() + 40);
                         System.out.println("Voce Trabalhou por 3 anos... " +
-                                "\nSua idade atual é de: " + (idade += 3) + " anos" +
-                                "\nSeu saldo total é de: R$ " + (dinheiro += 40));
+                                "\nSua idade atual é de: " + (playerLogged.getIdade()) + " anos" +
+                                "\nSeu saldo total é de: R$ " + (playerLogged.getDinheiro()));
 
                         menuPrincipal();
                     } else {
@@ -146,18 +152,20 @@ public class Main {
                     System.out.println("O pescador ganha uma renda variavel, isso vai depender da situação do mar" +
                             " pescando por 5 anos ele pode ganhar de 20 ou 100 reais." +
                             "\nVocê deseja aceitar esse trabalho?");
-                    if (simOuNao()) {
+                    simOuNao();
+                    if (opcaoUser == 1) {
+                        playerLogged.setIdade(playerLogged.getIdade() + 5);
                         System.out.println("Voce Pescou por 5 anos... " +
-                                "\nSua idade atual é de: " + (idade += 5) + " anos");
+                                "\nSua idade atual é de: " + (playerLogged.getIdade()) + " anos");
                         if (random.nextInt(1 + 1) == 1) {
-                            dinheiro += 20;
+                            playerLogged.setDinheiro(playerLogged.getDinheiro() + 20);
                             System.out.println("Infelismente o mar não estava pra peixe\nSeu salário foi de apenas R$20" +
-                                    "\nSeu saldo total é de: R$" + dinheiro);
+                                    "\nSeu saldo total é de: R$" + playerLogged.getDinheiro());
                             menuPrincipal();
                         } else {
-                            dinheiro += 100;
+                            playerLogged.setDinheiro(playerLogged.getDinheiro() + 100);
                             System.out.println("O mar estava lotado de peixes!\nSeu salário foi de R$100" +
-                                    "\nSeu saldo total é de: R$" + dinheiro);
+                                    "\nSeu saldo total é de: R$" + playerLogged.getDinheiro());
                             menuPrincipal();
                         }
                     } else {
@@ -167,20 +175,27 @@ public class Main {
                 case 3:
                     System.out.println("O manobrista de carro ganha R$ 80,0 trabalhando por 7 anos de vida." +
                             "\nVocê deseja aceitar esse trabalho?");
-                    if (simOuNao()) {
+                    simOuNao();
+                    if (opcaoUser == 1) {
                         String motorista = "";
                         System.out.println("Qual é seu nome?");
                         motorista = scanner.nextLine();
+                        playerLogged.setIdade(playerLogged.getIdade() + 7);
+
                         if (motorista.equalsIgnoreCase("bia")) {
+                            playerLogged.setDinheiro(10);
+
                             System.out.println("Voce Trabalhou por 7 anos... " +
-                                    "\nSua idade atual é de: " + (idade += 7) + "anos" +
+                                    "\nSua idade atual é de: " + (playerLogged.getIdade() ) + " anos" +
                                     "\nVoçê acabou batendo todos os carro e ficou pobre..." +
-                                    "\nSeu saldo total é de: R$" + (dinheiro = 10));
+                                    "\nSeu saldo total é de: R$" + (playerLogged.getDinheiro() ));
                             menuPrincipal();
                         } else {
+                            playerLogged.setDinheiro(playerLogged.getDinheiro() + 80);
                             System.out.println("Voce Trabalhou por 7 anos...\nNessa jornada voçê não bateu nenhum carro!!! " +
-                                    "\nSua idade atual é de: " + (idade += 7) + "anos" +
-                                    "\nSeu saldo total é de: R$ " + (dinheiro += 80));
+                                    "\nSua idade atual é de: " + (playerLogged.getIdade()) + " anos" +
+                                    "\nSeu saldo total é de: R$ " + (playerLogged.getDinheiro() ));
+
                             menuPrincipal();
                         }
 
@@ -188,6 +203,8 @@ public class Main {
                         seletorDeTrabalhos();
                     }
                     break;
+
+
                 case 4:
                     System.out.println("Saiu da loja\nIndo para o menu principal");
                     menuPrincipal();
@@ -225,9 +242,9 @@ public class Main {
             scanner.nextLine();
             switch (opcaoUser) {
                 case 1:
-                    if (dinheiro >= 50) {
-                        dinheiro -= 50;
-                        System.out.println("Voce gastou R$ 50 para comprar uma blusa\nAgora seu saldo total é: " + dinheiro + "\nAproveite sua blusa e volte sempre! (:");
+                    if (playerLogged.getDinheiro() >= 50) {
+                        playerLogged.setDinheiro(playerLogged.getDinheiro() - 50);
+                        System.out.println("Voce gastou R$ 50 para comprar uma blusa\nAgora seu saldo total é: " + playerLogged.getDinheiro() + "\nAproveite sua blusa e volte sempre! (:");
                         loja();
                     } else {
                         System.out.println("SEU POBRE IMUNDO, você nao tem dinheiro sufuciente, vai trabalhar!");
@@ -235,9 +252,9 @@ public class Main {
                     }
                     break;
                 case 2:
-                    if (dinheiro >= 35) {
-                        dinheiro -= 35;
-                        System.out.println("Voce gastou R$ 35 para comprar uma blusa\nAgora seu saldo total é: " + dinheiro + "\nAproveite sua blusa e volte sempre! (:");
+                    if (playerLogged.getDinheiro() >= 35) {
+                        playerLogged.setDinheiro(playerLogged.getDinheiro() - 35);
+                        System.out.println("Voce gastou R$ 35 para comprar uma blusa\nAgora seu saldo total é: " + playerLogged.getDinheiro() + "\nAproveite sua blusa e volte sempre! (:");
                         loja();
                     } else {
                         System.out.println("SEU POBRE IMUNDO, você nao tem dinheiro sufuciente, vai trabalhar!");
@@ -245,9 +262,9 @@ public class Main {
                     }
                     break;
                 case 3:
-                    if (dinheiro >= 20) {
-                        dinheiro -= 20;
-                        System.out.println("Voce gastou R$ 20 para comprar uma blusa\nAgora seu saldo total é: " + dinheiro + "\nAproveite sua blusa e volte sempre! (:");
+                    if (playerLogged.getDinheiro() >= 20) {
+                        playerLogged.setDinheiro(playerLogged.getDinheiro() - 20);
+                        System.out.println("Voce gastou R$ 20 para comprar uma blusa\nAgora seu saldo total é: " + playerLogged.getDinheiro() + "\nAproveite sua blusa e volte sempre! (:");
                         loja();
                     } else {
                         System.out.println("SEU POBRE IMUNDO, você nao tem dinheiro sufuciente, vai trabalhar!");
@@ -284,7 +301,7 @@ public class Main {
                         |___________________________________________________|
                         """;
         int numUser = 0;
-        double valorInvestimentoUser = 0, total = 0;
+        long valorInvestimentoUser = 0, total = 0;
         System.out.println(menuRaspadinha);
         opcaoUser = scanner.nextInt();
         scanner.nextLine();
@@ -308,18 +325,18 @@ public class Main {
                 }
 
                 System.out.println("Digite o valor que voçê quer depositar no número: " + numUser +
-                        "\nVoçê tem: R$" + dinheiro);
+                        "\nVoçê tem: R$" + playerLogged.getDinheiro());
 
-                valorInvestimentoUser = scanner.nextDouble();
+                valorInvestimentoUser = scanner.nextLong();
                 if (valorInvestimentoUser < 0) {
                     System.out.println("Voçê não colocou o valor correto.\nVoltando para o menu...");
                     lojaDeRaspadinhas();
 
                 } else {
-                    if (dinheiro - valorInvestimentoUser < 0) {
+                    if (playerLogged.getDinheiro() - valorInvestimentoUser < 0) {
                         System.out.println("Voçê não tem dinheiro sufuciente\nvoltando para o menu...");
                     } else {
-                        dinheiro -= valorInvestimentoUser;
+                        playerLogged.setDinheiro(playerLogged.getDinheiro() -  valorInvestimentoUser);
 
                         System.out.println("O numero escolhido pelo jogador foi: " + numUser + "\n\nVamos iniciar o sorteio...");
                         Set<Integer> hashSet = new HashSet<>();
@@ -344,13 +361,14 @@ public class Main {
                         }
 
                         if (valorListaTotal.contains(numUser)) {
+                            playerLogged.setDinheiro(playerLogged.getDinheiro() + total);
                             System.out.println("Voçê conseguiu acertar o numero, Parabenss!" +
                                     "\nO premio que voçê vai ganhar é de: R$" + (total = valorInvestimentoUser * 2) +
-                                    "\nAgora seu dinheiro é de: R$" + (dinheiro += total));
-                            System.out.println("Quer jogar novamente?" +
-                                    "\nSeu dinheiro é de: R$" + dinheiro);
+                                    "\nAgora seu dinheiro é de: R$" + (playerLogged.getDinheiro()));
+                            System.out.println("\nQuer jogar novamente?" +
+                                    "\nSeu dinheiro é de: R$" + playerLogged.getDinheiro());
 
-                            if (simOuNao()) {
+                            if (opcaoUser == 1) {
                                 lojaDeRaspadinhas();
                             } else {
                                 menuPrincipal();
@@ -360,7 +378,7 @@ public class Main {
 
                             System.out.println("Quer jogar novamente?");
 
-                            if (simOuNao()) {
+                            if (opcaoUser == 1) {
                                 lojaDeRaspadinhas();
                             } else {
                                 menuPrincipal();
@@ -382,13 +400,15 @@ public class Main {
 
     }
 
-    public static boolean simOuNao() {
+    public static void simOuNao() {
+
         System.out.println(
                 "Digite 1 para SIM" +
                         "\nDigite 2 para NÃO");
 
-        int opcaoUser = scanner.nextInt();
+        opcaoUser = scanner.nextInt();
         scanner.nextLine();
+
         while (opcaoUser < 1 || opcaoUser > 2) {
             System.out.println("Opção invalida " +
                     "Digite 1 para SIM " +
@@ -397,7 +417,6 @@ public class Main {
             scanner.nextLine();
         }
 
-        return opcaoUser == 1;
     }
 
     public static void menuPrincipal() {
@@ -411,6 +430,8 @@ public class Main {
                         | Digite 2 Para ir comprar uma Roupa.               |
                         |                                                   |
                         | Digite 3 Para ir comprar Rapadinhas.              |
+                        |                                                   |
+                        | Digite 4 Para Salvar o seu player                 |
                         |                                                   |
                         |___________________________________________________|
                         """;
@@ -428,11 +449,22 @@ public class Main {
                     break;
                 case 3:
                     lojaDeRaspadinhas();
+                    break;
+                case 4:
+                    salvarPlayer();
+                    System.out.println("Player salvo com sucesso\n");
+
+                    for (Player player : Player.listaPlayers){
+                        System.out.println(player);
+                    }
+
+                    break;
+
                 default:
                     System.out.println("opção invalida");
                     menuPrincipal();
             }
-        } while (opcaoUser < 0 || opcaoUser > 4);
+        } while (opcaoUser < 0 || opcaoUser > 5);
 
     }
 }
